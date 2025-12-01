@@ -29,7 +29,7 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention")
 }
 
-rootProject.name = "AdventOfCode2024"
+rootProject.name = "AdventOfCode2025"
 
 dependencyResolutionManagement {
     repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
