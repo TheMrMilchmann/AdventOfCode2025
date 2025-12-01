@@ -22,36 +22,32 @@
 package days
 
 import utils.*
+import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 fun main() {
-    val instructions = readInput()
+    val offsets = readInput()
         .filter(String::isNotBlank)
         .map {
-            Instruction(
-                dir = if (it.first() == 'R') Direction.R else Direction.L,
-                amount = it.drop(1).toInt()
-            )
+            var n = it.drop(1).toInt()
+            if (it.first() == 'L') n *= -1
+            n
         }
 
-    val positions = sequence {
-        var c = 50L
-        for (instruction in instructions) {
-            val t = (instruction.amount / 100) + 1
-            c += (100 * t)
+    data class Click(val pos: Int, val endOfInstruction: Boolean)
 
-            var amount = instruction.amount
-            if (instruction.dir == Direction.L) amount *= -1
+    val clicks = sequence {
+        var click = Click(50, false)
 
-            c += amount
-            c %= 100
-
-            yield(c)
+        offsets.forEach { offset ->
+            for (i in 1..offset.absoluteValue) {
+                val p = (click.pos + 100 + offset.sign) % 100
+                click = Click(p, endOfInstruction = i == offset.absoluteValue)
+                yield(click)
+            }
         }
     }
 
-    println("Part 1: ${positions.count { it == 0L }}")
+    println("Part 1: ${clicks.filter { it.endOfInstruction }.count { it.pos == 0 }}")
+    println("Part 2: ${clicks.count { it.pos == 0 }}")
 }
-
-data class Instruction(val dir: Direction, val amount: Int)
-
-enum class Direction { L, R }
