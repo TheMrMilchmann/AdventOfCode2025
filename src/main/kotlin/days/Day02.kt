@@ -32,7 +32,9 @@ fun main() {
             (start.toLong())..(end.toLong())
         }
 
-    val r = "^(.+)\\1$".toRegex()
+    val r1 = "^(.+)\\1$".toRegex()
+    val r2 = "^(.+)\\1+$".toRegex()
 
-    println("Part 1: ${ranges.flatten().filter { it.toString().matches(r) }.onEach { println(it) }.sum()}")
+    println("Part 1: ${ranges.flatten().filter { it.toString().matches(r1) }.sum()}")
+    println("Part 2: ${ranges.flatten().filter { it.toString().matches(r2) }.sum()}")
 }
