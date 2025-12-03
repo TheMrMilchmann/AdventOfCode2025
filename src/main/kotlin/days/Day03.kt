@@ -22,18 +22,29 @@
 package days
 
 import utils.*
+import kotlin.math.*
 
 fun main() {
     val batteries = readInput()
         .filter(String::isNotBlank)
         .map { it.map(Char::digitToInt) }
 
-    fun part1() =
+    fun solve(digits: Int) =
         batteries.sumOf { battery ->
-            val high = battery.dropLast(1).withIndex().maxBy(IndexedValue<Int>::value)
-            val low = battery.drop(high.index + 1).max()
-            high.value * 10 + low
+            var res = 0L
+            var start = 0
+
+            for (i in (digits - 1) downTo 0) {
+                val v = battery.drop(start).dropLast(i).withIndex().maxBy(IndexedValue<Int>::value)
+                start += v.index + 1
+
+                res += 10.0.pow(i).toLong() * v.value
+            }
+
+            println(res)
+            res
         }
 
-    println("Part 1: ${part1()}")
+    println("Part 1: ${solve(2)}")
+    println("Part 2: ${solve(12)}")
 }
