@@ -41,7 +41,6 @@ fun main() {
                 res += 10.0.pow(i).toLong() * v.value
             }
 
-            println(res)
             res
         }
 
