@@ -38,5 +38,23 @@ fun main() {
             }
             .count()
 
+    fun part2(): Int {
+        val removed = mutableSetOf<GridPos>()
+
+        do {
+            val toRemove = grid.toMap()
+                .filterValues { it == '@' }
+                .filterKeys { pos ->
+                    val neighbours = grid.getAdjacentPositions(pos, includeDiagonals = true)
+                    neighbours.count { grid[it] == '@' && it !in removed } < 4
+                }
+
+            val removed = removed.addAll(toRemove.keys)
+        } while (removed)
+
+        return removed.size
+    }
+
     println("Part 1: ${part1()}")
+    println("Part 2: ${part2()}")
 }
