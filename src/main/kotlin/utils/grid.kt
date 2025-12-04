@@ -92,6 +92,14 @@ fun <S, T> Grid<S>.map(transform: (x: HPos, y: VPos, value: S) -> T): Grid<T> = 
     height = height
 )
 
+fun <E> Grid<E>.sumOf(selector: (GridPos, E) -> Int): Int {
+    var sum: Int = 0
+    for (pos in positions) {
+        sum += selector(pos, this[pos])
+    }
+    return sum
+}
+
 fun <E> Grid<E>.toMap(): Map<GridPos, E> = buildMap {
     positions.forEach { pos -> this[pos] = this@toMap[pos] }
 }
