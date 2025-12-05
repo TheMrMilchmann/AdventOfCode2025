@@ -38,5 +38,30 @@ fun main() {
             freshIngredients to availableIngredients
         }
 
+    fun part2(): Long {
+        val ranges = freshIngredients
+            .sortedBy(LongRange::first)
+
+        val res = mutableListOf<LongRange>()
+
+        var i = 0
+        while (i < ranges.size) {
+            var first = ranges[i].first
+            var last = ranges[i].last
+            i++
+
+            while (i < ranges.size && ranges[i].first <= (last + 1)) {
+                first = minOf(first, ranges[i].first)
+                last = maxOf(ranges[i].last, last)
+                i++
+            }
+
+            res += first..last
+        }
+
+        return res.sumOf { it.last - it.first + 1 }
+    }
+
     println("Part 1: ${availableIngredients.count { ingredient -> freshIngredients.any { range -> ingredient in range } }}")
+    println("Part 2: ${part2()}")
 }
