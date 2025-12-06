@@ -51,6 +51,6 @@ fun main() {
         return acc
     }
 
-    println("Part 1: ${input.sumOf { it.solve { list -> list.map { it .trim().toLong() } } }}")
+    println("Part 1: ${input.sumOf { it.solve { list -> list.map { it.trim().toLong() } } }}")
     println("Part 2: ${input.sumOf { it.solve { list -> list.maxBy(String::length).indices.map { index -> list.map { line -> if (index in line.indices) line[index] else ' ' }.joinToString("").trim().toLong() } }} }")
 }
