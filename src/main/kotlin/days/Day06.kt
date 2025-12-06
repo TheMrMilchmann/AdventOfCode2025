@@ -34,22 +34,23 @@ fun main() {
 
                 for (cx in cxs) {
                     add(lines.map { line -> line.substring(start, minOf(line.length, cx)) })
-                    start = cx
+                    start = cx + 1
                 }
             }
         }
 
-    fun List<String>.solve(): Long {
+    fun List<String>.solve(select: (List<String>) -> Iterable<Long>): Long {
         val multiply = '*' in last()
         val op: Long.(Long) -> Long = if (multiply) Long::times else Long::plus
 
         var acc = if (multiply) 1L else 0L
-        for (r in 0 until (this.size - 1)) {
-            acc = op(acc, this[r].trim().toLong())
+        for (x in select(dropLast(1))) {
+            acc = op(acc, x)
         }
 
         return acc
     }
 
-    println("Part 1: ${input.sumOf { it.solve() }}")
+    println("Part 1: ${input.sumOf { it.solve { list -> list.map { it .trim().toLong() } } }}")
+    println("Part 2: ${input.sumOf { it.solve { list -> list.maxBy(String::length).indices.map { index -> list.map { line -> if (index in line.indices) line[index] else ' ' }.joinToString("").trim().toLong() } }} }")
 }
