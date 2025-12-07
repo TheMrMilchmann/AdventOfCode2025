@@ -22,6 +22,7 @@
 package days
 
 import utils.*
+import java.util.concurrent.ConcurrentHashMap
 
 fun main() {
     val grid = readInput()
@@ -50,5 +51,22 @@ fun main() {
         return res
     }
 
+    fun part2(): Long {
+        val cache = ConcurrentHashMap<Pair<Int, Int>, Long>()
+
+        fun solve(x: Int, y: Int): Long {
+            return cache.getOrPut(x to y) {
+                when {
+                    y == grid.lastIndex -> 1
+                    grid[y][x] == '^' -> solve(x - 1, y + 1) + solve(x + 1, y + 1)
+                    else -> solve(x, y + 1)
+                }
+            }
+        }
+
+        return solve(grid.first().indexOf('S'), 0)
+    }
+
     println("Part 1: ${part1()}")
+    println("Part 2: ${part2()}")
 }
