@@ -89,11 +89,50 @@ fun main() {
             .reduce(Int::times)
     }
 
-    fun part2() {
-//        val edges = points.withIndex()
-//            .flatMap { (iA, a) -> points.withIndex().mapNotNull { (iB, b) -> if (a != b) Edge(iA, iB, distanceSq(a, b)) else null } }
 
+    fun part2(): Long {
+        val edges = points.withIndex()
+            .flatMap { (iA, a) -> points.withIndex().mapNotNull { (iB, b) -> if (a != b) Edge(iA, iB, distanceSq(a, b)) else null } }
+            .sortedBy { it.distance }
+            .distinct()
+
+        val parentIndices = IntArray(points.size) { it }
+        val ranks = IntArray(points.size)
+
+        tailrec fun find(i: Int): Int {
+            if (parentIndices[i] == i) return i
+            return find(parentIndices[i])
+        }
+
+        fun union(p: Int, q: Int): Boolean {
+            val pRoot = find(p)
+            val qRoot = find(q)
+            if (qRoot == pRoot) return false
+
+            if (ranks[qRoot] < ranks[pRoot]) {
+                parentIndices[pRoot] = qRoot
+            } else if (ranks[qRoot] > ranks[pRoot]) {
+                parentIndices[qRoot] = pRoot
+            } else {
+                parentIndices[qRoot] = pRoot
+                ranks[pRoot]++
+            }
+
+            return true
+        }
+
+        for (edge in edges) {
+            if (union(edge.a, edge.b)) {
+                if (parentIndices.groupBy { find(it) }.values.size == 1) {
+                    return points[edge.a].x * points[edge.b].x
+                }
+            }
+        }
+
+        error("")
     }
 
+
     println("Part 1: ${part1()}")
+    println("Part 2: ${part2()}")
 }
