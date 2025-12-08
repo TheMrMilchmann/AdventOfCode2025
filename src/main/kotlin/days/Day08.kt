@@ -46,12 +46,12 @@ fun main() {
         }
     }
 
-    fun part1(): Int {
-        val edges = points.withIndex()
-            .flatMap { (iA, a) -> points.withIndex().mapNotNull { (iB, b) -> if (a != b) Edge(iA, iB, distanceSq(a, b)) else null } }
-            .sortedBy { it.distance }
-            .distinct()
+    val edges = points.withIndex()
+        .flatMap { (iA, a) -> points.withIndex().mapNotNull { (iB, b) -> if (a != b) Edge(iA, iB, distanceSq(a, b)) else null } }
+        .sortedBy { it.distance }
+        .distinct()
 
+    fun part1(): Int {
         val parentIndices = IntArray(points.size) { it }
         val ranks = IntArray(points.size)
 
@@ -89,13 +89,7 @@ fun main() {
             .reduce(Int::times)
     }
 
-
     fun part2(): Long {
-        val edges = points.withIndex()
-            .flatMap { (iA, a) -> points.withIndex().mapNotNull { (iB, b) -> if (a != b) Edge(iA, iB, distanceSq(a, b)) else null } }
-            .sortedBy { it.distance }
-            .distinct()
-
         val parentIndices = IntArray(points.size) { it }
         val ranks = IntArray(points.size)
 
@@ -131,7 +125,6 @@ fun main() {
 
         error("")
     }
-
 
     println("Part 1: ${part1()}")
     println("Part 2: ${part2()}")
