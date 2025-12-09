@@ -22,10 +22,51 @@
 package days
 
 import utils.*
-import kotlin.math.absoluteValue
+import kotlin.math.*
 
 fun main() {
     data class Vec2(val x: Long, val y: Long)
+    data class Line(val a: Vec2, val b: Vec2)
+
+    fun Line.intersects(a: Vec2, b: Vec2): Boolean {
+        val (sX, sY) = this.a
+        val (eX, eY) = this.b
+
+        val rectMinX = minOf(a.x, b.x) + 1
+        val rectMaxX = maxOf(a.x, b.x) - 1
+        val rectMinY = minOf(a.y, b.y) + 1
+        val rectMaxY = maxOf(a.y, b.y) - 1
+
+        val dX = eX - sX
+        val dY = eY - sY
+
+        var tStart = 0.0
+        var tEnd = 1.0
+
+        fun clip(p: Double, q: Double): Boolean {
+            if (p == 0.0) {
+                if (q < 0) return false
+                return true
+            }
+
+            val t = q / p
+
+            if (p < 0) {
+                tStart = maxOf(tStart, t)
+            } else {
+                tEnd = minOf(tEnd, t)
+            }
+
+            return tStart <= tEnd
+        }
+
+        if (!clip(-dX.toDouble(), -(rectMinX - sX).toDouble())) return false
+        if (!clip( dX.toDouble(),  (rectMaxX - sX).toDouble())) return false
+        if (!clip(-dY.toDouble(), -(rectMinY - sY).toDouble())) return false
+        if (!clip( dY.toDouble(),  (rectMaxY - sY).toDouble())) return false
+
+        return true
+    }
 
     val points = readInput()
         .map { line ->
@@ -33,5 +74,10 @@ fun main() {
             Vec2(x, y)
         }
 
+    val lines = (points + points.first())
+        .windowed(2)
+        .map { (a, b) -> Line(a, b) }
+
     println("Part 1: ${points.flatMap { a -> points.mapNotNull { b -> if (a != b) a to b else null } }.maxOf { (a, b) -> ((a.x - b.x).absoluteValue + 1) * ((a.y - b.y).absoluteValue + 1) }}")
+    println("Part 2: ${points.flatMap { a -> points.mapNotNull { b -> if (a != b) a to b else null } }.filter { (a, b) -> lines.none { line -> line.intersects(a, b) } }.maxOf { (a, b) -> ((a.x - b.x).absoluteValue + 1) * ((a.y - b.y).absoluteValue + 1) }}")
 }
